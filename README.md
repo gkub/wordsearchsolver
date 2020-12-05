@@ -7,18 +7,8 @@ There are no dependencies/packages required outside of Python's standard library
 
 wordsearchsolver.py is a basic word search solver
 
-The easiest way to use the program is to place a text file of the following format ***in the same directory as wordsearchsolver.py***:
-
-5x5
-H A S D F
-G E Y B H
-J K L Z X
-C V B L N
-G O O D O
-HELLO
-GOOD
-BYE
-
+The easiest way to use the program is to place a text file of the proper format ***in the same directory as wordsearchsolver.py***:
+For an example of a properly formatted input file, check "test_1.txt" or "test_2.txt" found in the "tests" folder, in the same directory as this README file.
 
 -----------------
 
@@ -35,5 +25,6 @@ BYE 1:3 1:1
 
 The output is given on the command line, as required by the program specifications.
 
+----------------
 
 This program was authored/developed by Gregory Kubiski
