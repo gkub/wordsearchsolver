@@ -7,12 +7,14 @@ There are no dependencies/packages required outside of Python's standard library
 
 wordsearchsolver.py is a basic word search solver
 
+-----------------
+
+To start using wordsearchsolver.py, simply install it, unzip the folder, and follow along with the following instructions:
+
 The easiest way to use the program is to place a text file of the proper format ***in the same directory as wordsearchsolver.py***:
 For an example of a properly formatted input file, check "test_1.txt" or "test_2.txt" found in the "tests" folder, in the same directory as this README file.
 
------------------
-
-Simply run wordsearchsolver.py with Python 3.7 (or greater) installed on your computer,
+Run wordsearchsolver.py with Python 3.7 (or greater) installed on your computer,
 and it will prompt you to enter the name of the file you want to open. 
 
 For example, when the program prompts you to "Enter the name of the text file containing your input word search:", if your text file is named "test.txt", you simply must type "test.txt" (without quotation marks) and the program should run as intended.
