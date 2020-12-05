@@ -12,19 +12,15 @@ For an example of a properly formatted input file, check "test_1.txt" or "test_2
 
 -----------------
 
-Simply run wordsearchsolver.py with Python 3.7 (or greater - versions beyond 3.7.4 are untested but should still work, as of Dec 04, 2014) installed on your computer,
+Simply run wordsearchsolver.py with Python 3.7 (or greater) installed on your computer,
 and it will prompt you to enter the name of the file you want to open. 
 
 For example, when the program prompts you to "Enter the name of the text file containing your input word search:", if your text file is named "test.txt", you simply must type "test.txt" (without quotation marks) and the program should run as intended.
 
-***As long as the file is in the same folder/directory as wordsearchsolver.py*** (or you enter the correct path relative to the location of worsearchsolver.py), the program will proceed to solve the word search contained in the input text file, and output the solutions in the following format:
+***As long as the file is in the same folder/directory as wordsearchsolver.py*** (or you enter the correct path relative to the location of worsearchsolver.py), the program will proceed to solve the word search contained in the input text file, format the results, and output them to the python terminal/command line, as required by the program specifications.
 
-HELLO 0:0 4:4
-GOOD 4:0 4:3
-BYE 1:3 1:1
-
-The output is given on the command line, as required by the program specifications.
+If you are having any problems running the file, check that your text file formats are correct, that your files are in the right directories, and that you are running the right version of Python (all described above). If you are still running into any issues, you can contact me with any questions at gkub@gkub.ca
 
 ----------------
 
-This program was authored/developed by Gregory Kubiski
+This program was authored/developed by Gregory Kubiski :)
