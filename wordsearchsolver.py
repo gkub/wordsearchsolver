@@ -35,7 +35,6 @@
 # sys and pathlib imported for following line of code that version-checks Python
 import sys
 from pathlib import Path 
-import pdb
 
 # The following two lines of code ensure that the user is running the correct version of Python (or newer)
 MIN_PYTHON_VERSION = (3, 7)
@@ -59,8 +58,10 @@ def main():
         # Processes the file and returns the required information to find the given word search's solutions as a 3-component tuple
         dimensions, word_search, words_list = process_file(file_name)
         
-        # solves the word search and returns the solutions
-        solutions = solve_wordsearch(dimensions, word_search, words_list)
+        print() # To make the output slightly prettier 
+        # solves the word search, formats and prints the solutions (it would not hurt to further divide formatting/printing into separate functions)
+        solve_wordsearch(dimensions, word_search, words_list)
+        print() # For beauty, again. Hahah!
         
 # intakes file, parses it for critical data, and returns the data in the form of a tuple:
 # (dimensions, wordsearch, wordslist)
@@ -95,222 +96,220 @@ def process_file(file_name):
         
     return(dimensions, word_search, words_list)
 
-# There is certainly a more elegant way to solve this, using recursion/dynamic programming or something similar,
+# I think there is a more elegant way to solve this, using recursion/dynamic programming or something similar,
 # but due to time-constraints I cannot implement such a solution.
 def solve_wordsearch(dimensions, word_search, words_list):
     for word in words_list:
-        #print(word)
         found = False
         count = 0
         # master while loop that exits when each word is found
         for i in range(dimensions[0]):
             for j in range(dimensions[1]):
-                print(word_search[i][j])
+                start = [i, j]
+                end = None # end will turn into list containing end-coordinates of matching word, if found.
                 # if value in grid matches first letter in word 
                 if word_search[i][j] == word[0]:
+                    # These booleans start true and are flipped to False if the next while loop finds boundary errors in its
+                    # search for a matching word
                     right_possible = True
+                    down_possible = True
                     left_possible = True
                     up_possible = True
-                    down_possible = True
-
                     
-                    # Check bounds to the right
-                    # If out of bounds, skip this block
-                    if (len(word)+ i) > (dimensions[0]):
-                        right_possible = False
+                    # Each of these conditionals checks if word length is in bounds in the respective direction,
+                    # checks for a match, and either breaks or continues
+                    if (len(word) + j) <= (dimensions[0]):
+                        end = check_right(i, j, dimensions, word_search, word)
+                        # If end is changed from none, this if-statement ensures to break out of for loop if word is found
+                        if end != None:
+                            # Not a fan of these break statements, but they do the job for now
+                            break 
+                    else:    
+                        right_possible = False                    
+
+
+                    # Check down
+                    if (len(word) + i) <= (dimensions[0]):
+                        end = check_down(i, j, dimensions, word_search, word)
+                        if end != None:
+                            break
                     else:
-                        # Check to the right until word is found or invalidated
-                        # start new comparison string AKA potential_word
-                        potential_word = ''
-                        # SET UP PROPERLY AFTER NAP
-                        for k in range(len(word)):
-                            index = word_search[i+k][j]
-                            potential_word += index
-                            #print(potential_word)
-                            #pdb.set_trace()
-                        # if full match found, break out of loop with start + end points 
-                        if potential_word == word:
-                            start = word_search[i][j]
-                            end = word_search[i+k][j]
-                            found = True
-                            print('found')
+                        down_possible = False
+
+                    # Check left
+                    if len(word) <= j:
+                        end = check_left(i, j, dimensions, word_search, word)
+                        if end != None:
+                            break
+                    else:
+                        left_possible = False
+
+                    # Check up
+                    if len(word) <= i:
+                        end = check_up(i, j, dimensions, word_search, word)
+                        if end != None:
+                            break
+                    else:
+                        up_possible = False
+                    
+                    # Only checks diagonals if they haven't been ruled out by the previous bounds checks
+                    # Check down-right diagonal
+                    if right_possible and down_possible:
+                        end = check_dr_diag(i, j, dimensions, word_search, word)
+                        if end != None:
                             break
 
+                    # Check down-left diagonal
+                    if down_possible and left_possible:
+                        end = check_dl_diag(i, j, dimensions, word_search, word)
+                        if end != None:
+                            break
 
-                    # If no match, then check down
-                    
-                    # Check bounds downward
-                    # If out of bounds, break loop
-                    if (len(word) + j) > (dimensions[1]):
-                        down_possible = False
-                    else:
-                        # Check down until word is found or invalidated
-                        # start new comparison string AKA potential_word
-                        potential_word = ''
-                        for k in range(len(word)):
-                            index = word_search[i][j+k]
-                            if index == word[k]:
-                                potential_word += index
-                                # if full match found, break out of loop
-                                if potential_word == word:
-                                    start = word_search[i][j]
-                                    end = word_search[i][j+k-1]
-                                    found = True
-                                    break
+                    # Check up-left diagonal
+                    if left_possible and up_possible:
+                        end = check_ul_diag(i, j, dimensions, word_search, word)
+                        if end != None:
+                            break
 
-                                        
+                    # Check up-right diagonal
+                    if up_possible and right_possible:
+                        end = check_ur_diag(i, j, dimensions, word_search, word)
+                        if end != None:
+                            break
 
-                    # If no match, then check left
-
-                    # Check bounds to the left
-                    # If out of bounds, break loop
-                    if (len(word)-1) > (i):
-                        left_possible = False
-                    else:
-                        # Check to the left until word is found or invalidated
-                        # start new comparison string AKA potential_word
-                        potential_word = ''
-                        for k in range(len(word)-1):
-                            index = word_search[i-k][j]
-                            if index == word[k]:
-                                potential_word += index
-                                # if full match found, break out of loop
-                                if potential_word == word:
-                                    start = word_search[i][j]
-                                    end = word_search[i-k][j]
-                                    found = True
-                                    break
-                                else:
-                                    break
-
-                                
-                    
-                    # If no match, then check up
-
-                    # Check bounds to the right
-                    # If out of bounds, break loop
-                    if (len(word)-1) > (j):
-                        up_possible = False
-                    else:
-                        # Check to the right until word is found or invalidated
-                        # start new comparison string AKA potential_word
-                        potential_word = ''
-                        for k in range(len(word)-1):
-                            index = word_search[i][j-k]
-                            if index == word[k]:
-                                potential_word += index
-                                if potential_word == word:
-                                    start = word_search[i][j]
-                                    end = word_search[k][j-k]
-                                    found = True
-                                    break
-                                else:
-                                    break
-                                
-                
-                    # diagonals do not need to do bounds checks, because this was already done for their 2D components
-                    # If no match, then check down-right diagonal
-                    if (right_possible == True) and (down_possible == True) and (found == False):
-                        # Check to the right until word is found or invalid
-                        # start new comparison string AKA potential_word
-                        potential_word = ''
-                        for k in range(len(word)-1):
-                                index = word_search[i+k][j+k]
-                                if index == word[k]:
-                                    potential_word += index
-                                    if potential_word == word:
-                                        start = word_search[i][j]
-                                        end = word_search[i+k][j+k]
-                                        found = True
-                                    break
-                                else:
-                                    break
-                                    
-                    
-                    # If no match, then check down-left diagonal
-                    if (left_possible == True) and (down_possible == True) and (found == False):
-                        # Check to the right until word is found or invalid
-                        # start new comparison string AKA potential_word
-                        potential_word = ''
-                        for k in range(len(word)-1):
-                                index = word_search[i-k][j+k]
-                                if index == word[k]:
-                                    potential_word += index
-                                    if potential_word == word:
-                                        start = word_search[i][j]
-                                        end = word_search[i-k][j+k]
-                                        found = True
-                                        break
-                                else:
-                                    break
-                    
-                    # If no match, then check up-left diagonal
-                    if (left_possible == True) and (down_possible == True) and (found == False):
-                        # Check to the right until word is found or invalid
-                        # start new comparison string AKA potential_word
-                        potential_word = ''
-                        for k in range(len(word)-1):
-                                index = word_search[i-k][j-k]
-                                if index == word[k]:
-                                    potential_word += index
-                                    if potential_word == word:
-                                        start = word_search[i][j]
-                                        end = word_search[i-k][j-k]
-                                        found = True
-                                        break
-                                else:
-                                    break
-                    
-                    # Finally, check up-right if no other matches yet
-                    if (left_possible == True) and (down_possible == True) and (found == False):
-                        # Check to the right until word is found or invalid
-                        # start new comparison string AKA potential_word
-                        potential_word = ''
-                        for k in range(len(word)-1):
-                                index = word_search[i+k][j-k]
-                                if index == word[k]:
-                                    potential_word += index
-                                    if potential_word == word:
-                                        start = word_search[i][j]
-                                        end = word_search[i+k][j-k]
-                                        found = True
-                                        break
-                                else:
-                                    break
-                            
+                    # if nothing is found yet, move on to next index in graph
+            if end != None:
+                # Breaks the outer loop and moves to next word, if end is found
+                break
+        # FINAL OUTPUT - the following line formats and prints the desired output.
+        # the location of this output could be reworked, but it does the job!
+        print(word, str(start[0])+":"+str(start[1]), str(end[0])+":"+str(end[1]))
 
 
+# Each of the following 8 functions are called in solve_wordsearch(), and their purpose is to 
+# check if a valid match is found in the wordsearch, in the respective direction for each function
+# For example, the following function - check_right() - checks for further matches to the right of 
+# an index that is found to match the first letter of a desired word
+def check_right(i, j, dimensions, word_search, word):                    
+    # Check to the right until word is found or invalidated
+    # start new comparison string AKA potential_word
+    potential_word = ''
+    for k in range(len(word)):
+        potential_word += word_search[i][j+k]
 
-                    
+        # if full match found, break out of loop with start + end points 
+        if potential_word == word:
+            end = [i, j+k]
+            return end
+    # If no match, returns found = False and end = None
+    return None
 
-            
+def check_down(i, j, dimensions, word_search, word):                    
+    # Check down until word is found or invalidated
+    # start new comparison string potential_word
+    potential_word = ''
+
+    for k in range(len(word)):
+        potential_word += word_search[i+k][j]
+
+        # if full match found, break out of loop with start + end points 
+        if potential_word == word:
+            end = [i+k, j]
+            return end
+    # If no match, returns found = False and end = None
+    return None
 
 
-            
-'''for line in input_file:
-            print(line)
-        input_file.close()
-        pass'''
+def check_left(i, j, dimensions, word_search, word):
+    # Check to the left until word is found or invalidated
+    # start new comparison string AKA potential_word
+    potential_word = ''
+
+    for k in range(len(word)):
+        potential_word += word_search[i][j-k]
+        # if full match found, break out of loop with start + end points 
+        if potential_word == word:
+            end = [i, j-k]
+            return end
+    # If no match, returns found = False and end = None
+    return None
+
+def check_up(i, j, dimensions, word_search, word):
+    # Check upward until word is found or invalidated
+    # start new comparison string AKA potential_word
+    potential_word = ''
+
+    for k in range(len(word)):
+        potential_word += word_search[i-k][j]
+
+        # if full match found, break out of loop with start + end points 
+        if potential_word == word:
+            end = [i-k, j]
+            return end
+    # If no match, returns found = False and end = None
+    return None
 
 
-        
-    
+def check_dr_diag(i, j, dimensions, word_search, word):
+    # Check down-right diagonal until word is found or invalidated
+    # start new comparison string AKA potential_word
+    potential_word = ''
 
+    for k in range(len(word)):
+        potential_word += word_search[i+k][j+k]
 
+        # if full match found, break out of loop with start + end points 
+        if potential_word == word:
+            end = [i+k, j+k]
+            return end
+    # If no match, returns found = False and end = None
+    return None
 
+def check_dl_diag(i, j, dimensions, word_search, word):
+    # Check down-left diagonal until word is found or invalidated
+    # start new comparison string AKA potential_word
+    potential_word = ''
 
-'''
-from tkinter import *
+    for k in range(len(word)):
+        potential_word += word_search[i+k][j-k]
 
-root = Tk() #
+        # if full match found, break out of loop with start + end points 
+        if potential_word == word:
+            end = [i-k, j+k]
+            return end
+    # If no match, returns found = False and end = None
+    return None
 
-# Creates label widget
-myLabel = Label(root, text="Label")
-# Packs label to GUI
-myLabel.pack()
+def check_ul_diag(i, j, dimensions, word_search, word):
+    # Check up-left diagonal until word is found or invalidated
+    # start new comparison string AKA potential_word
+    potential_word = ''
 
-root.mainloop()
-'''
+    for k in range(len(word)):
+        potential_word += word_search[i-k][j-k]
+
+        # if full match found, break out of loop with start + end points 
+        if potential_word == word:
+            end = [i-k, j-k]
+            return end
+    # If no match, returns found = False and end = None
+    return None
+
+def check_ur_diag(i, j, dimensions, word_search, word):
+    # Check up-right diagonal until word is found or invalidated
+    # start new comparison string AKA potential_word
+    potential_word = ''
+
+    for k in range(len(word)):
+        potential_word += word_search[i-k][j+k]
+
+        # if full match found, break out of loop with start + end points 
+        if potential_word == word:
+            end = [i-k, j+k]
+            return end
+    # If no match, returns found = False and end = None
+    return None
+
 if __name__ == "__main__":
     main()
     pass
