@@ -62,6 +62,7 @@ def main():
         # solves the word search, formats and prints the solutions (it would not hurt to further divide formatting/printing into separate functions)
         solve_wordsearch(dimensions, word_search, words_list)
         print() # For beauty, again. Hahah!
+        input("Press Enter to exit the program")
         
 # intakes file, parses it for critical data, and returns the data in the form of a tuple:
 # (dimensions, wordsearch, wordslist)
